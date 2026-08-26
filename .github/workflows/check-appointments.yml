@@ -1,0 +1,41 @@
+name: Check DubTraining Appointment Availability
+
+on:
+  schedule:
+    # Runs at 13:00 UTC daily (~6am PST / 5am PDT depending on DST).
+    # Adjust to whenever you want your check to run.
+    - cron: '0 8,12,17,21 * * *'
+  workflow_dispatch: {}  # lets you trigger it manually from the Actions tab too
+
+permissions:
+  contents: write  # needed so the workflow can commit updated known_dates.json back to the repo
+
+jobs:
+  check-availability:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run availability check
+        env:
+          NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL }}
+          STATE_FILE: known_dates.json
+          MONTHS_AHEAD: '3'
+        run: python check_appointments.py
+
+      - name: Commit updated state file
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add known_dates.json
+          git diff --cached --quiet || git commit -m "Update known appointment dates [skip ci]"
+          git push
