@@ -3,7 +3,8 @@ name: Check DubTraining Appointment Availability
 on:
   schedule:
     # Runs 4x/day at 2:00, 12:00, 17:00, 21:00 UTC
-    - cron: '0 2,12,17,21 * * *'
+    ### - cron: '0 2,12,17,21 * * *'
+    - cron: '*/10 * * * *'
   workflow_dispatch: {}  # lets you trigger it manually from the Actions tab too
 
 permissions:
