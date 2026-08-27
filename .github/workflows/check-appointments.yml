@@ -2,9 +2,8 @@ name: Check DubTraining Appointment Availability
 
 on:
   schedule:
-    # Runs at 13:00 UTC daily (~6am PST / 5am PDT depending on DST).
-    # Adjust to whenever you want your check to run.
-    - cron: '0 8,12,17,21 * * *'
+    # Runs 4x/day at 12:00, 17:00, 21:00, 26:00 UTC
+    - cron: '0 12,17,21,26 * * *'
   workflow_dispatch: {}  # lets you trigger it manually from the Actions tab too
 
 permissions:
