@@ -6,7 +6,7 @@ on:
     ### - cron: '0 2,12,17,21 * * *'
     - cron: '27 * * * *'
   workflow_dispatch: {}  # lets you trigger it manually from the Actions tab too
-  repositorry_dispatch: {}
+  repository_dispatch: {}
 
 permissions:
   contents: write  # needed so the workflow can commit updated known_dates.json back to the repo
