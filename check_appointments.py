@@ -91,7 +91,7 @@ def notify(new_dates: set[str]) -> None:
     )
     print(message)
 
-    if ignore_SLACK_WEBHOOK_URL:
+    if SLACK_WEBHOOK_URL:
         payload = json.dumps({"text": message}).encode()  # Slack-compatible; adjust for other targets
         req = urllib.request.Request(
             SLACK_WEBHOOK_URL, data=payload, headers={"Content-Type": "application/json"}
