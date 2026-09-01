@@ -12,6 +12,7 @@ Env vars:
     STATE_FILE          path to persist known-available dates (default: known_dates.json)
     NOTIFY_WEBHOOK_URL   optional Slack-style incoming webhook URL for push alerts
     MONTHS_AHEAD         how many months forward to check, including current (default: 3)
+    GROUPME_BOT_ID      used to notify GroupMe channels
 """
 
 import json
@@ -30,7 +31,8 @@ TIMEZONE = "America/Los_Angeles"
 BASE_URL = "https://dubtraining.as.me/api/scheduling/v1/availability/month"
 
 STATE_FILE = Path(os.environ.get("STATE_FILE", "known_dates.json"))
-WEBHOOK_URL = os.environ.get("NOTIFY_WEBHOOK_URL")
+SLACK_WEBHOOK_URL = os.environ.get("NOTIFY_WEBHOOK_URL")
+GROUPME_BOT_ID = os.environ.get("GROUPME_BOT_ID")
 MONTHS_AHEAD = int(os.environ.get("MONTHS_AHEAD", "3"))
 
 BOOKING_URL = "https://dubtraining.as.me/schedule/ad1bb86c/appointment/84360440/calendar/any"
@@ -89,10 +91,20 @@ def notify(new_dates: set[str]) -> None:
     )
     print(message)
 
-    if WEBHOOK_URL:
+    if SLACK_WEBHOOK_URL:
         payload = json.dumps({"text": message}).encode()  # Slack-compatible; adjust for other targets
         req = urllib.request.Request(
-            WEBHOOK_URL, data=payload, headers={"Content-Type": "application/json"}
+            SLACK_WEBHOOK_URL, data=payload, headers={"Content-Type": "application/json"}
+        )
+        try:
+            urllib.request.urlopen(req, timeout=10)
+        except Exception as e:
+            print(f"Warning: webhook notification failed: {e}", file=sys.stderr)
+
+    if GROUPME_BOT_ID:
+        payload = json.dumps({"bot_id": GROUPME_BOT_ID,"text": message}).encode()  # GroupMe-compatible; adjust for other targets
+        req = urllib.request.Request(
+            "https://api.groupme.com/v3/bots/post", data=payload, headers={"Content-Type": "application/json"}
         )
         try:
             urllib.request.urlopen(req, timeout=10)
