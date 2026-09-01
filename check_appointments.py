@@ -35,7 +35,7 @@ SLACK_WEBHOOK_URL = os.environ.get("NOTIFY_WEBHOOK_URL")
 GROUPME_BOT_ID = os.environ.get("GROUPME_BOT_ID")
 MONTHS_AHEAD = int(os.environ.get("MONTHS_AHEAD", "3"))
 
-BOOKING_URL = "https://dubtraining.as.me/schedule/ad1bb86c/appointment/84360440/calendar/any"
+BOOKING_URL = "<https://dubtraining.as.me/schedule/ad1bb86c/appointment/84360440/calendar/any>"
 
 
 def month_starts(n: int) -> list[str]:
@@ -103,11 +103,10 @@ def notify(new_dates: set[str]) -> None:
             print(f"Warning: webhook notification failed: {e}", file=sys.stderr)
 
     if GROUPME_BOT_ID:
-        payload = json.dumps({"bot_id": "3336b426282b474225c518d57c","text": "test text"}).encode()  # GroupMe-compatible; adjust for other targets
+        payload = json.dumps({"bot_id": GROUPME_BOT_ID,"text": message}).encode()  # GroupMe-compatible; adjust for other targets
         req = urllib.request.Request(
             "https://api.groupme.com/v3/bots/post", data=payload, headers={"Content-Type": "application/json"}
         )
-        print(payload)
         try:
             urllib.request.urlopen(req, timeout=10)
             print("Sent to GroupMe")
