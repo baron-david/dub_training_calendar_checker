@@ -98,16 +98,19 @@ def notify(new_dates: set[str]) -> None:
         )
         try:
             urllib.request.urlopen(req, timeout=10)
+            print("Sent to Slack")
         except Exception as e:
             print(f"Warning: webhook notification failed: {e}", file=sys.stderr)
 
-    if GROUPME_BOT_ID:
-        payload = json.dumps({"bot_id": GROUPME_BOT_ID,"text": message}).encode()  # GroupMe-compatible; adjust for other targets
+    if True:
+        payload = json.dumps({"bot_id": "3336b426282b474225c518d57c","text": "test text"}).encode()  # GroupMe-compatible; adjust for other targets
         req = urllib.request.Request(
             "https://api.groupme.com/v3/bots/post", data=payload, headers={"Content-Type": "application/json"}
         )
+        pring(payload)
         try:
             urllib.request.urlopen(req, timeout=10)
+            print("Sent to GroupMe")
         except Exception as e:
             print(f"Warning: webhook notification failed: {e}", file=sys.stderr)
 
