@@ -129,7 +129,7 @@ def save_known_dates(dates: set[str]) -> None:
 
 
 def notify(new_dates: set[str], times_by_date: dict[str, list[dict]] | None = None) -> None:
-    lines = ["New DubTraining appointment availability found:"]
+    lines = ["Jamie - New 7th grade hitting availability found:"]
     for d in sorted(new_dates):
         if times_by_date and d in times_by_date:
             lines.append(f"  - {d}: {format_slots(times_by_date[d])}")
@@ -180,7 +180,8 @@ def main() -> None:
     closed_dates = known_dates - current_dates
     if closed_dates:
         print(f"No longer available: {sorted(closed_dates)}")
-
+        
+    # Fetch specific open times for any newly available dates
     times_by_date = {}
     if new_dates:
         times_by_date = fetch_times_for_dates(new_dates)
