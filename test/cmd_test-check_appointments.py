@@ -31,6 +31,7 @@ TIMEZONE = "America/Los_Angeles"
 BASE_URL = "https://dubtraining.as.me/api/scheduling/v1/availability/month"
 
 STATE_FILE = Path(os.environ.get("STATE_FILE", "known_dates.json"))
+STATE_FILE_ALL = Path(os.environ.get("STATE_FILE", "hist_all_dates.json"))
 SLACK_WEBHOOK_URL = os.environ.get("NOTIFY_WEBHOOK_URL")
 GROUPME_BOT_ID = os.environ.get("GROUPME_BOT_ID")
 MONTHS_AHEAD = int(os.environ.get("MONTHS_AHEAD", "3"))
@@ -79,8 +80,9 @@ def load_known_dates() -> set[str]:
     return set()
 
 
-def save_known_dates(dates: set[str]) -> None:
-    STATE_FILE.write_text(json.dumps(sorted(dates), indent=2))
+def save_known_dates(dates: set[str], file: Path) -> None:
+    file.write_text(json.dumps(sorted(dates), indent=2))
+    print(json.dumps(sorted(dates), indent=2))
 
 
 def notify(new_dates: set[str]) -> None:
@@ -160,6 +162,9 @@ def main() -> None:
     sorted_dates = sorted(filtered_dates_string)
     print(sorted_dates[-3:])
     print(sorted_dates)
+
+    save_known_dates(all_dates,STATE_FILE_ALL)
+
 
 if __name__ == "__main__":
     main()
