@@ -80,7 +80,7 @@ def load_known_dates() -> set[str]:
 
 
 def save_known_dates(dates: set[str]) -> None:
-    STATE_FILE.write_text(json.dumps(sorted(dates), indent=2))
+    STATE_FILE.write_text(json.dumps(sorted(dates)[-30:], indent=2))
 
 
 def notify(new_dates: set[str]) -> None:
@@ -125,6 +125,7 @@ def main() -> None:
 
     known_dates = load_known_dates()
     new_dates = current_dates - known_dates
+    all_dates = current_dates | known_dates
 
     # Dates that were available before but no longer are (informational only)
     closed_dates = known_dates - current_dates
@@ -136,7 +137,7 @@ def main() -> None:
     else:
         print("No new dates since last check.")
 
-    save_known_dates(current_dates)
+    save_known_dates(all_dates)
 
 
 if __name__ == "__main__":
