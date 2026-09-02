@@ -32,7 +32,9 @@ jobs:
           GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID }}
           STATE_FILE: known_dates.json
           MONTHS_AHEAD: '3'
-        run: python check_appointments_all.py
+        run: |
+          python check_appointments_all.py
+          python check_appointments_jamie.py
 
       - name: Commit updated state file
         run: |

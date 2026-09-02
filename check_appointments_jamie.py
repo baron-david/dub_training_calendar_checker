@@ -26,16 +26,16 @@ import requests
 
 OWNER = "ad1bb86c"
 APPOINTMENT_TYPE_ID = "84360440"
-CALENDAR_ID = "any"
+CALENDAR_ID = "12864420"
 TIMEZONE = "America/Los_Angeles"
 BASE_URL = "https://dubtraining.as.me/api/scheduling/v1/availability/month"
 
-STATE_FILE = Path(os.environ.get("STATE_FILE", "known_dates.json"))
+STATE_FILE = Path(os.environ.get("STATE_FILE", "known_dates_jamie.json"))
 SLACK_WEBHOOK_URL = os.environ.get("NOTIFY_WEBHOOK_URL")
-GROUPME_BOT_ID = os.environ.get("GROUPME_BOT_ID")
+GROUPME_BOT_ID = os.environ.get("GROUPME_BOT_ID_j")
 MONTHS_AHEAD = int(os.environ.get("MONTHS_AHEAD", "3"))
 
-BOOKING_URL = "<https://dubtraining.as.me/?|Book Here!>"
+BOOKING_URL = "https://dubtraining.as.me/schedule/ad1bb86c/appointment/84360440/calendar/12864420"
 
 
 def month_starts(n: int) -> list[str]:
@@ -85,7 +85,7 @@ def save_known_dates(dates: set[str]) -> None:
 
 def notify(new_dates: set[str]) -> None:
     message = (
-        "New DubTraining appointment availability found:\n"
+        "Jamie's 7th grade appointment availability found:\n"
         + "\n".join(f"  - {d}" for d in sorted(new_dates))
         + f"\n\n{BOOKING_URL}"
     )
@@ -137,7 +137,8 @@ def main() -> None:
     else:
         print("No new dates since last check.")
 
-    save_known_dates(all_dates)
+    # save only current dates, alerts me when any new date pops up
+    save_known_dates(current_dates)
 
 
 if __name__ == "__main__":
