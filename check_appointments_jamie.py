@@ -184,7 +184,7 @@ def main() -> None:
     times_by_date = {}
     if new_dates:
         times_by_date = fetch_times_for_dates(new_dates)
-        notify(new_dates)
+        notify(new_dates, times_by_date)
     else:
         print("No new dates since last check.")
 
