@@ -1,4 +1,4 @@
-name: Check DubTraining Appointment Availability
+name: TEST Check DubTraining Appointment Availability
 
 on:
   workflow_dispatch: {}  # lets you trigger it manually from the Actions tab too
