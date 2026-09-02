@@ -25,11 +25,10 @@ jobs:
       - name: Run availability check
         env:
           NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL }}
-          GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID }}
-          STATE_FILE: known_dates.json
+          STATE_FILE: known_dates_f.json
           MONTHS_AHEAD: '3'
         run: |
-          python check_appointments_test.py
+          python check_appointments_all.py
 
       - name: Commit updated state file
         run: |
