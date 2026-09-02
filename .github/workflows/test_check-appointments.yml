@@ -1,7 +1,6 @@
 name: Check DubTraining Appointment Availability
 
 on:
-  schedule:
   workflow_dispatch: {}  # lets you trigger it manually from the Actions tab too
 
 
