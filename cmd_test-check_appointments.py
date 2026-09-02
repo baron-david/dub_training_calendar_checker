@@ -125,7 +125,8 @@ def main() -> None:
 
     known_dates = load_known_dates()
     new_dates = current_dates - known_dates
-
+    all_dates = current_dates | known_dates
+    
     # Dates that were available before but no longer are (informational only)
     closed_dates = known_dates - current_dates
     if closed_dates:
@@ -141,8 +142,10 @@ def main() -> None:
     print("New dates \n"+"\n".join(f"  - {d}" for d in sorted(new_dates)))
     print("current dates \n"+"\n".join(f"  - {d}" for d in sorted(current_dates)))
     print("known dates \n"+"\n".join(f"  - {d}" for d in sorted(known_dates)))
-    all_dates = current_dates | known_dates
+
     print("all dates \n"+"\n".join(f"  - {d}" for d in sorted(all_dates)))
+
+
     today = date.today()
     date_objects = {datetime.strptime(d, "%Y-%m-%d").date() for d in all_dates}
     filtered_dates = {d for d in date_objects if d >= today}
