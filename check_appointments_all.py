@@ -29,6 +29,7 @@ APPOINTMENT_TYPE_ID = "84360440"
 CALENDAR_ID = "any"
 TIMEZONE = "America/Los_Angeles"
 BASE_URL = "https://dubtraining.as.me/api/scheduling/v1/availability/month"
+TIMES_URL = "https://dubtraining.as.me/api/scheduling/v1/availability/times"
 
 STATE_FILE = Path(os.environ.get("STATE_FILE", "known_dates.json"))
 SLACK_WEBHOOK_URL = os.environ.get("NOTIFY_WEBHOOK_URL")

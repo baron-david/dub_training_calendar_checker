@@ -29,6 +29,7 @@ APPOINTMENT_TYPE_ID = "84360440"
 CALENDAR_ID = "12864420"
 TIMEZONE = "America/Los_Angeles"
 BASE_URL = "https://dubtraining.as.me/api/scheduling/v1/availability/month"
+TIMES_URL = "https://dubtraining.as.me/api/scheduling/v1/availability/times"
 
 STATE_FILE = Path("known_dates_jamie.json")
 SLACK_WEBHOOK_URL = os.environ.get("NOTIFY_WEBHOOK_URL")
@@ -73,6 +74,50 @@ def fetch_all_available_dates() -> set[str]:
     return available
 
 
+def fetch_times_for_date(day: str, calendar_id: str = CALENDAR_ID) -> list[dict]:
+    """Return the list of available time slots for a single date (YYYY-MM-DD).
+ 
+    The API responds with {"<date>": [{"time": "...", "slotsAvailable": N}, ...]},
+    so this unwraps that down to just the list of slot dicts.
+    """
+    params = {
+        "owner": OWNER,
+        "appointmentTypeId": APPOINTMENT_TYPE_ID,
+        "calendarId": calendar_id,
+        "startDate": day,
+        "timezone": TIMEZONE,
+    }
+    resp = requests.get(TIMES_URL, params=params, timeout=15)
+    resp.raise_for_status()
+    data = resp.json()
+    return data.get(day, [])
+ 
+def fetch_times_for_dates(days: set[str], calendar_id: str = CALENDAR_ID) -> dict[str, list[dict]]:
+    """Fetch time slots for each date in `days`. Returns {date: [slot_dicts]}."""
+    results = {}
+    for day in sorted(days):
+        try:
+            results[day] = fetch_times_for_date(day, calendar_id)
+        except requests.RequestException as e:
+            print(f"Warning: failed to fetch times for {day}: {e}", file=sys.stderr)
+            results[day] = []
+    return results
+ 
+ 
+def format_slots(slots: list[dict]) -> str:
+    """Turn a list of slot dicts into a human-readable 'h:mm AM/PM (xN)' string."""
+    if not slots:
+        return "no slots returned"
+    formatted = []
+    for s in slots:
+        try:
+            t = datetime.fromisoformat(s["time"]).strftime("%I:%M %p").lstrip("0")
+            formatted.append(f"{t} (x{s.get('slotsAvailable', '?')})")
+        except (KeyError, ValueError) as e:
+            formatted.append(f"<unparseable slot: {s} ({e})>")
+    return ", ".join(formatted)
+
+ 
 def load_known_dates() -> set[str]:
     if STATE_FILE.exists():
         return set(json.loads(STATE_FILE.read_text()))
@@ -83,12 +128,16 @@ def save_known_dates(dates: set[str]) -> None:
     STATE_FILE.write_text(json.dumps(sorted(dates)[-30:], indent=2))
 
 
-def notify(new_dates: set[str]) -> None:
-    message = (
-        "Jamie's 7th grade appointment availability found:\n"
-        + "\n".join(f"  - {d}" for d in sorted(new_dates))
-        + f"\n\n{BOOKING_URL}"
-    )
+def notify(new_dates: set[str], times_by_date: dict[str, list[dict]] | None = None) -> None:
+    lines = ["New DubTraining appointment availability found:"]
+    for d in sorted(new_dates):
+        if times_by_date and d in times_by_date:
+            lines.append(f"  - {d}: {format_slots(times_by_date[d])}")
+        else:
+            lines.append(f"  - {d}")
+    lines.append("")
+    lines.append(BOOKING_URL)
+    message = "\n".join(lines)
     print(message)
 
     if SLACK_WEBHOOK_URL:
@@ -132,7 +181,9 @@ def main() -> None:
     if closed_dates:
         print(f"No longer available: {sorted(closed_dates)}")
 
+    times_by_date = {}
     if new_dates:
+        times_by_date = fetch_times_for_dates(new_dates)
         notify(new_dates)
     else:
         print("No new dates since last check.")
