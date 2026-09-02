@@ -30,7 +30,7 @@ CALENDAR_ID = "12864420"
 TIMEZONE = "America/Los_Angeles"
 BASE_URL = "https://dubtraining.as.me/api/scheduling/v1/availability/month"
 
-STATE_FILE = Path(os.environ.get("STATE_FILE", "known_dates_jamie.json"))
+STATE_FILE = Path("known_dates_jamie.json")
 SLACK_WEBHOOK_URL = os.environ.get("NOTIFY_WEBHOOK_URL")
 GROUPME_BOT_ID = os.environ.get("GROUPME_BOT_ID_j")
 MONTHS_AHEAD = int(os.environ.get("MONTHS_AHEAD", "3"))
@@ -115,7 +115,7 @@ def notify(new_dates: set[str]) -> None:
 
 
 def main() -> None:
-    print(f"[{datetime.now(timezone.utc).isoformat()}] Checking availability...")
+    print(f"[{datetime.now(timezone.utc).isoformat()}] Checking Jamie's availability...")
 
     try:
         current_dates = fetch_all_available_dates()

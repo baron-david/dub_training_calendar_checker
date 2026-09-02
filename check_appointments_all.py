@@ -115,7 +115,7 @@ def notify(new_dates: set[str]) -> None:
 
 
 def main() -> None:
-    print(f"[{datetime.now(timezone.utc).isoformat()}] Checking availability...")
+    print(f"[{datetime.now(timezone.utc).isoformat()}] Checking All availability...")
 
     try:
         current_dates = fetch_all_available_dates()
