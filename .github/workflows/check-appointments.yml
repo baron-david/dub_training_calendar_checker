@@ -30,6 +30,7 @@ jobs:
         env:
           NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL }}
           GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID }}
+          GROUPME_BOT_ID_test: ${{ secrets.GROUPME_BOT_ID_TEST }}
           STATE_FILE: known_dates.json
           MONTHS_AHEAD: '3'
         run: |
