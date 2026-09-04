@@ -191,13 +191,6 @@ def main() -> None:
     # save only current dates, alerts me when any new date pops up
     save_known_dates(current_dates)
 
-    # send a push heartbeat to StatusCake
-    req = urllib.request.Request("https://push.statuscake.com/?PK=13e082a27e5b289&TestID=8017773")
-    try:
-        urllib.request.urlopen(req, timeout=10)
-        print("Push heartbeat sent to StatusCake")
-    except Exception as e:
-        print(f"Warning: StatusCake push failed: {e}", file=sys.stderr)
 
 
 if __name__ == "__main__":

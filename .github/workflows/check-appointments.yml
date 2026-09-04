@@ -26,16 +26,23 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Run availability check
+      - name: Run availability checks
         env:
           NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL }}
           GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID }}
           GROUPME_BOT_ID_test: ${{ secrets.GROUPME_BOT_ID_TEST }}
           STATE_FILE: known_dates.json
           MONTHS_AHEAD: '3'
+          
         run: |
           python check_appointments_all.py
           python check_appointments_jamie.py
+
+      - name: StatusCake Push Heartbeat
+        env:
+          STATUSCAKE_PK: ${{ vars.STATUSCAKE_PK }}
+        run: |
+          curl "https://push.statuscake.com/?PK=$STATUSCAKE_PK&TestID=8017773"
 
       - name: Commit updated state file
         run: |
