@@ -36,7 +36,7 @@ SLACK_WEBHOOK_URL = os.environ.get("NOTIFY_WEBHOOK_URL")
 GROUPME_BOT_ID = os.environ.get("GROUPME_BOT_ID_test")
 MONTHS_AHEAD = int(os.environ.get("MONTHS_AHEAD", "3"))
 
-BOOKING_URL = "https://dubtraining.as.me/schedule/ad1bb86c/appointment/84360440/calendar/12864420"
+BOOKING_URL = "<https://dubtraining.as.me/schedule/ad1bb86c/appointment/84360440/calendar/12864420|Book Now!>"
 
 
 def month_starts(n: int) -> list[str]:
