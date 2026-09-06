@@ -200,12 +200,14 @@ def main() -> None:
 
     print("Current Times Available:")
     print(current_times)
-    
+
     new_times = current_times - known_dates
     if new_times:
         new_dates_split = {ts.split('T')[0] for ts in new_times}
         notify(new_dates_split,times_by_date)
-
+    else:
+        print("No new dates since last check.")
+        
     # Dates that were available before but no longer are (informational only)
     closed_dates = known_dates - current_times
     if closed_dates:
