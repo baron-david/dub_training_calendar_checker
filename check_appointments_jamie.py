@@ -190,6 +190,7 @@ def main() -> None:
 
     # save only current dates, alerts me when any new date pops up
     save_known_dates(current_dates)
+    print(times_by_date)
 
 
 

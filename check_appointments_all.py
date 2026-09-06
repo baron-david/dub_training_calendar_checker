@@ -191,7 +191,7 @@ def main() -> None:
 
     # Save all seen dates, even if an old date reappears back I won't be alerted
     save_known_dates(all_dates)
-
+    print(times_by_date)
 
 if __name__ == "__main__":
     main()
