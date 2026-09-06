@@ -194,19 +194,25 @@ def main() -> None:
 
 
 ## test code here
+    print("test code variables here..")
     print(times_by_date)
+    print(known_dates)
 
     cleaned = remove_slots_available(times_by_date)    
     print(cleaned)
 
-    print(json.dumps(sorted(cleaned)[-30:], indent=2))
+    print(json.dumps(sorted(cleaned)[-50:], indent=2))
 
-    times = {
+    current_times = {
         slot['time']
         for slots in cleaned.values()
         for slot in slots
     }
-    save_known_dates(times)
+    save_known_dates(current_times)
+
+    print(current_dates-current_times)
+    print(current_times-current_dates)
+
 
 def remove_slots_available(data: dict) -> dict:
     """Strip 'slotsAvailable' from each slot dict, keeping only 'time'."""
