@@ -125,7 +125,7 @@ def format_slots(slots: list[dict]) -> str:
 
 
 def save_known_dates(dates: set[str]) -> None:
-    STATE_FILE.write_text(json.dumps(sorted(dates)[-30:], indent=2))
+    STATE_FILE.write_text(json.dumps(sorted(dates)[-15:], indent=2))
 
 
 def notify(new_dates: set[str], times_by_date: dict[str, list[dict]] | None = None) -> None:
@@ -179,7 +179,7 @@ def main() -> None:
     # Dates that were available before but no longer are (informational only)
     closed_dates = known_dates - current_dates
     if closed_dates:
-        print(f"No longer available: {sorted(closed_dates)}")
+        print(f"The dates seen before but not there today: {sorted(closed_dates)}")
 
     # Fetch specific open times for any newly available dates
     times_by_date = {}
