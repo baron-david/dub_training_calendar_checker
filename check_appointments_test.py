@@ -174,7 +174,6 @@ def main() -> None:
         print(f"Error fetching availability: {e}", file=sys.stderr)
         sys.exit(1)
 
-    current_dates = set() # test empty data
     known_dates = load_known_dates()
     new_dates = current_dates - known_dates
     all_dates = current_dates | known_dates
@@ -189,7 +188,7 @@ def main() -> None:
 
 ## test code here
   # Fetch specific open times for any newly available dates
-
+    times_by_date = {}
     times_by_date = fetch_times_for_dates(current_dates)
 
     times_only = remove_slots_available(times_by_date)
