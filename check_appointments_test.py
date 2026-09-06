@@ -208,7 +208,7 @@ def main() -> None:
 
     print("new_dates_split")
     print(new_dates_split)
-
+    notify(new_dates,times_by_date)
 
 
 
