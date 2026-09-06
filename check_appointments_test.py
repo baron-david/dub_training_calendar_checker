@@ -174,6 +174,7 @@ def main() -> None:
         print(f"Error fetching availability: {e}", file=sys.stderr)
         sys.exit(1)
 
+    current_dates = set() # test empty data
     known_dates = load_known_dates()
     new_dates = current_dates - known_dates
     all_dates = current_dates | known_dates
