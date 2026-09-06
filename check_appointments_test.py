@@ -185,7 +185,7 @@ def main() -> None:
     times_by_date = {}
     if new_dates:
         times_by_date = fetch_times_for_dates(new_dates)
-        notify(new_dates,times_by_date)
+        # notify(new_dates,times_by_date)
     else:
         print("No new dates since last check.")
 
@@ -194,21 +194,20 @@ def main() -> None:
 
 
 ## test code here
+    if new_dates:
+        times_only = remove_slots_available(times_by_date)    
+        current_times = {
+            slot['time']
+            for slots in times_only.values()
+            for slot in slots
+        }
 
-    times_only = remove_slots_available(times_by_date)    
-    current_times = {
-        slot['time']
-        for slots in times_only.values()
-        for slot in slots
-    }
+        new_times = current_times - known_dates
+        if new_times:
+            new_dates_split = {ts.split('T')[0] for ts in new_times}
+            notify(new_dates_split,times_by_date)
+
     save_known_dates(current_times)
-
-    new_times = current_times - known_dates
-    new_dates_split = {ts.split('T')[0] for ts in new_times}
-
-    print("new_dates_split")
-    print(new_dates_split)
-    notify(new_dates_split,times_by_date)
 
 
 
