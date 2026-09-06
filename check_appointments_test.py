@@ -201,11 +201,11 @@ def main() -> None:
 
     print(json.dumps(sorted(cleaned)[-30:], indent=2))
 
-    times = sorted(
+    times = {
         slot['time']
         for slots in cleaned.values()
         for slot in slots
-    )
+    }
     save_known_dates(times)
 
 def remove_slots_available(data: dict) -> dict:
