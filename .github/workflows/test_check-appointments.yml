@@ -25,12 +25,12 @@ jobs:
       - name: Run availability check
         env:
           # NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL }}
-          STATE_FILE: known_dates_jamie.json
+          STATE_FILE: known_dates_test.json
           MONTHS_AHEAD: '2'
         run: |
-          python check_appointments_all.py
+          python check_appointments_test.py
 
       - name: Print state file
         run: |
           echo "Printing known dates file..."
-          cat known_dates.json
+          cat known_dates_test.json
