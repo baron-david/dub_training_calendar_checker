@@ -25,7 +25,7 @@ from pathlib import Path
 import requests
 
 OWNER = "ad1bb86c"
-APPOINTMENT_TYPE_ID = "84360440"
+APPOINTMENT_TYPE_ID = "84389518"
 CALENDAR_ID = "any"
 TIMEZONE = "America/Los_Angeles"
 BASE_URL = "https://dubtraining.as.me/api/scheduling/v1/availability/month"
@@ -201,12 +201,22 @@ def main() -> None:
 
     print(json.dumps(sorted(cleaned)[-30:], indent=2))
 
+    times = sorted(
+        slot['time']
+        for slots in cleaned.values()
+        for slot in slots
+    )
+
+    print(json.dumps(times[-30:], indent=2))
+
 def remove_slots_available(data: dict) -> dict:
     """Strip 'slotsAvailable' from each slot dict, keeping only 'time'."""
     return {
         date: [{'time': slot['time']} for slot in slots]
         for date, slots in data.items()
     }
+
+
 
 
 ## end test code
