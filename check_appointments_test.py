@@ -75,13 +75,6 @@ def fetch_all_available_dates() -> set[str]:
         available |= {date for date, is_open in data.items() if is_open}
     return available
 
-
-def load_known_dates() -> set[str]:
-    if STATE_FILE.exists():
-        return set(json.loads(STATE_FILE.read_text()))
-    return set()
-
-
 def fetch_times_for_date(day: str, calendar_id: str = CALENDAR_ID) -> list[dict]:
     """Return the list of available time slots for a single date (YYYY-MM-DD).
  
@@ -125,6 +118,12 @@ def format_slots(slots: list[dict]) -> str:
             formatted.append(f"<unparseable slot: {s} ({e})>")
     return ", ".join(formatted)
 
+ 
+def load_known_dates() -> set[str]:
+    if STATE_FILE.exists():
+        return set(json.loads(STATE_FILE.read_text()))
+    return set()
+
 
 def save_known_dates(dates: set[str]) -> None:
     STATE_FILE.write_text(json.dumps(sorted(dates)[-30:], indent=2))
@@ -165,6 +164,14 @@ def notify(new_dates: set[str], times_by_date: dict[str, list[dict]] | None = No
             print(f"Warning: webhook notification failed: {e}", file=sys.stderr)
 
 
+def remove_slots_available(data: dict) -> dict:
+    """Strip 'slotsAvailable' from each slot dict, keeping only 'time'."""
+    return {
+        date: [{'time': slot['time']} for slot in slots]
+        for date, slots in data.items()
+    }
+    
+
 def main() -> None:
     print(f"[{datetime.now(timezone.utc).isoformat()}] Checking All availability...")
 
@@ -182,8 +189,6 @@ def main() -> None:
     closed_dates = known_dates - current_dates
     if closed_dates:
         print(f"No longer available: {sorted(closed_dates)}")
-
-  
 
 
 ## test code here
@@ -204,14 +209,6 @@ def main() -> None:
         new_dates_split = {ts.split('T')[0] for ts in new_times}
         notify(new_dates_split,times_by_date)
 
-
-
-def remove_slots_available(data: dict) -> dict:
-    """Strip 'slotsAvailable' from each slot dict, keeping only 'time'."""
-    return {
-        date: [{'time': slot['time']} for slot in slots]
-        for date, slots in data.items()
-    }
 
 
 

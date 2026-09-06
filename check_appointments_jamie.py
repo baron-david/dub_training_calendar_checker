@@ -73,7 +73,6 @@ def fetch_all_available_dates() -> set[str]:
         available |= {date for date, is_open in data.items() if is_open}
     return available
 
-
 def fetch_times_for_date(day: str, calendar_id: str = CALENDAR_ID) -> list[dict]:
     """Return the list of available time slots for a single date (YYYY-MM-DD).
  
@@ -162,6 +161,15 @@ def notify(new_dates: set[str], times_by_date: dict[str, list[dict]] | None = No
         except Exception as e:
             print(f"Warning: webhook notification failed: {e}", file=sys.stderr)
 
+
+def remove_slots_available(data: dict) -> dict:
+    """Strip 'slotsAvailable' from each slot dict, keeping only 'time'."""
+    return {
+        date: [{'time': slot['time']} for slot in slots]
+        for date, slots in data.items()
+    }
+
+
 def main() -> None:
     print(f"[{datetime.now(timezone.utc).isoformat()}] Checking Jamie's availability...")
 
@@ -179,18 +187,29 @@ def main() -> None:
     closed_dates = known_dates - current_dates
     if closed_dates:
         print(f"No longer available: {sorted(closed_dates)}")
-        
-    # Fetch specific open times for any newly available dates
-    times_by_date = {}
-    if new_dates:
-        times_by_date = fetch_times_for_dates(new_dates)
-        notify(new_dates, times_by_date)
-    else:
-        print("No new dates since last check.")
 
-    # save only current dates, alerts me when any new date pops up
-    save_known_dates(current_dates)
-    print(times_by_date)
+  
+## new code to check date/times here
+  # Fetch specific open times for any newly available dates
+    times_by_date = {}
+    times_by_date = fetch_times_for_dates(current_dates)
+
+    times_only = remove_slots_available(times_by_date)
+    current_times = {
+        slot['time']
+        for slots in times_only.values()
+        for slot in slots
+    }
+    save_known_dates(current_times)
+
+    new_times = current_times - known_dates
+    if new_times:
+        new_dates_split = {ts.split('T')[0] for ts in new_times}
+        notify(new_dates_split,times_by_date)
+
+
+
+
 
 
 
