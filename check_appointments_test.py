@@ -210,8 +210,11 @@ def main() -> None:
     }
     save_known_dates(current_times)
 
-    print(current_dates-current_times)
-    print(current_times-current_dates)
+    print("known_dates-current_times")
+    print(known_dates-current_times)
+
+    print("current_times-known_dates")    
+    print(current_times-known_dates)
 
 
 def remove_slots_available(data: dict) -> dict:
