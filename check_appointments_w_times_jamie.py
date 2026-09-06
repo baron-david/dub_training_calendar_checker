@@ -183,14 +183,10 @@ def main() -> None:
     new_dates = current_dates - known_dates
     all_dates = current_dates | known_dates
 
-    # Dates that were available before but no longer are (informational only)
-    closed_dates = known_dates - current_dates
-    if closed_dates:
-        print(f"No longer available: {sorted(closed_dates)}")
 
-  
-## new code to check date/times here
-  # Fetch specific open times for any newly available dates
+    ## new code to check date/times here
+
+    # Fetch specific open times for any newly available dates
     times_by_date = {}
     times_by_date = fetch_times_for_dates(current_dates)
 
@@ -207,7 +203,10 @@ def main() -> None:
         new_dates_split = {ts.split('T')[0] for ts in new_times}
         notify(new_dates_split,times_by_date)
 
-
+    # Dates that were available before but no longer are (informational only)
+    closed_dates = known_dates - current_times
+    if closed_dates:
+        print(f"No longer available: {sorted(closed_dates)}")
 
 
 
