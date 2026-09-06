@@ -184,32 +184,26 @@ def main() -> None:
     if closed_dates:
         print(f"No longer available: {sorted(closed_dates)}")
 
-    # Fetch specific open times for any newly available dates
-    times_by_date = {}
-    if new_dates:
-        times_by_date = fetch_times_for_dates(new_dates)
-        # notify(new_dates,times_by_date)
-    else:
-        print("No new dates since last check.")
-
-    # Save all seen dates, even if an old date reappears back I won't be alerted
-    save_known_dates(all_dates)
+  
 
 
 ## test code here
-    if new_dates:
-        times_only = remove_slots_available(times_by_date)    
-        current_times = {
-            slot['time']
-            for slots in times_only.values()
-            for slot in slots
-        }
-        save_known_dates(current_times)
+  # Fetch specific open times for any newly available dates
+    times_by_date = {} # test empty dates
+    times_by_date = fetch_times_for_dates(current_dates)
 
-        new_times = current_times - known_dates
-        if new_times:
-            new_dates_split = {ts.split('T')[0] for ts in new_times}
-            notify(new_dates_split,times_by_date)
+    times_only = remove_slots_available(times_by_date)
+    current_times = {
+        slot['time']
+        for slots in times_only.values()
+        for slot in slots
+    }
+    save_known_dates(current_times)
+
+    new_times = current_times - known_dates
+    if new_times:
+        new_dates_split = {ts.split('T')[0] for ts in new_times}
+        notify(new_dates_split,times_by_date)
 
 
 
