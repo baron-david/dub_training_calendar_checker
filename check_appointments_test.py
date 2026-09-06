@@ -194,27 +194,22 @@ def main() -> None:
 
 
 ## test code here
-    print("test code variables here..")
-    print(times_by_date)
-    print(known_dates)
 
-    cleaned = remove_slots_available(times_by_date)    
-    print(cleaned)
-
-    print(json.dumps(sorted(cleaned)[-50:], indent=2))
-
+    times_only = remove_slots_available(times_by_date)    
     current_times = {
         slot['time']
-        for slots in cleaned.values()
+        for slots in times_only.values()
         for slot in slots
     }
     save_known_dates(current_times)
 
-    print("known_dates-current_times")
-    print(known_dates-current_times)
+    new_times = current_times - known_dates
+    new_dates_split = {ts.split('T')[0] for ts in new_times}
 
-    print("current_times-known_dates")    
-    print(current_times-known_dates)
+    print("new_dates_split")
+    print(new_dates_split)
+
+
 
 
 def remove_slots_available(data: dict) -> dict:
