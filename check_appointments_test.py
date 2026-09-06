@@ -189,7 +189,7 @@ def main() -> None:
 
 ## test code here
   # Fetch specific open times for any newly available dates
-    times_by_date = {} # test empty dates
+
     times_by_date = fetch_times_for_dates(current_dates)
 
     times_only = remove_slots_available(times_by_date)
