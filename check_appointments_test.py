@@ -204,13 +204,12 @@ def main() -> None:
             for slots in times_only.values()
             for slot in slots
         }
+        save_known_dates(current_times)
 
         new_times = current_times - known_dates
         if new_times:
             new_dates_split = {ts.split('T')[0] for ts in new_times}
             notify(new_dates_split,times_by_date)
-
-    save_known_dates(current_times)
 
 
 
