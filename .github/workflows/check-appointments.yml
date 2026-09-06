@@ -36,6 +36,7 @@ jobs:
           
         run: |
           python check_appointments_all.py
+          echo "====="
           python check_appointments_w_times_jamie.py
 
       - name: StatusCake Push Heartbeat
