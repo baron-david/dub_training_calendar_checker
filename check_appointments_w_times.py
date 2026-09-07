@@ -38,7 +38,7 @@ MONTHS_AHEAD = int(os.environ.get("MONTHS_AHEAD", "3"))
 COACH_NAME = os.environ.get("COACH_NAME", "All Coaches")
 CALENDAR_ID = os.environ.get("CALENDAR_ID", "any")
 
-BOOKING_URL = "<"+os.environ.get("CALENDAR_ID", "https://dubtraining.as.me")+"|Book Now!>"
+BOOKING_URL = "<"+os.environ.get("BOOKING_URL", "https://dubtraining.as.me")+"|Book Now!>"
 
 
 def month_starts(n: int) -> list[str]:
