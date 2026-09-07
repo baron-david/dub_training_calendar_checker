@@ -28,7 +28,7 @@ jobs:
           STATE_FILE: known_dates_test.json
           MONTHS_AHEAD: '2'
         run: |
-          python check_appointments_w_times_sav.py
+          python check_appointments_w_times_test.py
 
       - name: Print state file
         run: |

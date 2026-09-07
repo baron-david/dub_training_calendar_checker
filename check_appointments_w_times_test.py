@@ -195,12 +195,15 @@ def main() -> None:
     # Fetch specific open times for any newly available dates
     times_by_date = {}
     times_by_date = fetch_times_for_dates(current_dates)
+    print(times_by_date) # delete later
     times_only = remove_slots_available(times_by_date)
+    print(times_only) # delete later
     current_times = {
         slot['time']
         for slots in times_only.values()
         for slot in slots
     }
+    print(current_times) # delete later
     # Saving the union of known_date and current_times so that cancelations won't trigger an alert
     save_known_dates(current_times | known_dates)
 
