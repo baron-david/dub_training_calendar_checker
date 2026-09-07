@@ -36,7 +36,7 @@ SLACK_WEBHOOK_URL = os.environ.get("NOTIFY_WEBHOOK_URL")
 GROUPME_BOT_ID = os.environ.get("GROUPME_BOT_ID")
 MONTHS_AHEAD = int(os.environ.get("MONTHS_AHEAD", "3"))
 
-BOOKING_URL = "<https://dubtraining.as.me/schedule/ad1bb86c/appointment/84360440/calendar/12864420|Book Now!>"
+BOOKING_URL = "<https://dubtraining.as.me/schedule/ad1bb86c/appointment/84360440/calendar/12868457|Book Now!>"
 
 
 def month_starts(n: int) -> list[str]:
@@ -129,6 +129,10 @@ def save_known_dates(dates: set[str]) -> None:
 
 def notify(new_dates: set[str], times_by_date: dict[str, list[dict]] | None = None) -> None:
     lines = ["Savannah - New 7th grade hitting availability found:"]
+    for d in sorted(new_dates):
+        lines.append(f"  - {datetime.strptime(d, "%Y-%m-%dT%H:%M:%S%z").strftime("%Y-%m-%d %-I:%M%p")}")
+
+    lines = ["Availability:"]
     new_dates_split={ts.split('T')[0] for ts in new_dates}
     for d in sorted(new_dates_split):
         if times_by_date and d in times_by_date:
@@ -137,10 +141,6 @@ def notify(new_dates: set[str], times_by_date: dict[str, list[dict]] | None = No
             lines.append(f"  - {d}")
     lines.append("")
     lines.append(BOOKING_URL)
-    
-    lines.append("There are the new times since last run:")
-    for d in sorted(new_dates):
-        lines.append(f"  - {d}")
 
     message = "\n".join(lines)
     print(message)
