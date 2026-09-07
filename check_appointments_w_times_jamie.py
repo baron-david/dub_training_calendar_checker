@@ -127,14 +127,14 @@ def save_known_dates(dates: set[str]) -> None:
     STATE_FILE.write_text(json.dumps(sorted(dates)[-30:], indent=2))
 
 
-def notify(new_dates: set[str], times_by_date: dict[str, list[dict]] | None = None) -> None:
+def notify(new_dates: set[str], all_dates: set[str], times_by_date: dict[str, list[dict]] | None = None) -> None:
     lines = ["Jamie - New 7th grade hitting times found:"]
     for d in sorted(new_dates):
         lines.append(f"  - {datetime.strptime(d, "%Y-%m-%dT%H:%M:%S%z").strftime("%Y-%m-%d %-I:%M%p")}")
 
-    lines.append("Availability:")
-    new_dates_split={ts.split('T')[0] for ts in new_dates}
-    for d in sorted(new_dates_split):
+    lines.append("Current Availability:")
+    all_dates_split={ts.split('T')[0] for ts in all_dates}
+    for d in sorted(all_dates_split):
         if times_by_date and d in times_by_date:
             lines.append(f"  - {d}: {format_slots(times_by_date[d])}")
         else:
@@ -202,6 +202,7 @@ def main() -> None:
         for slots in times_only.values()
         for slot in slots
     }
+    # Saving only current_time so that if there is a cancelation to Jamie, it will get picked up on the next run.
     save_known_dates(current_times)
 
     print("Current Times Available:")
@@ -209,7 +210,7 @@ def main() -> None:
 
     new_times = current_times - known_dates
     if new_times:
-        notify(new_times,times_by_date)
+        notify(new_times,current_times,times_by_date)
     else:
         print("No new dates since last check.")
         
