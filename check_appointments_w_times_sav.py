@@ -128,7 +128,7 @@ def save_known_dates(dates: set[str]) -> None:
 
 
 def notify(new_dates: set[str], times_by_date: dict[str, list[dict]] | None = None) -> None:
-    lines = ["Savannah - New 7th grade hitting availability found:"]
+    lines = ["Savannah - New 7th grade hitting times found:"]
     for d in sorted(new_dates):
         lines.append(f"  - {datetime.strptime(d, "%Y-%m-%dT%H:%M:%S%z").strftime("%Y-%m-%d %-I:%M%p")}")
 
