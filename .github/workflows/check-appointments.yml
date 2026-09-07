@@ -34,7 +34,7 @@ jobs:
           MONTHS_AHEAD: '3'
           
         run: |
-          python check_appointments_all.py
+          python check_appointments_simple_dates_any.py
           cat $STATE_FILE
 
       - name: Extra Scripts - Run availability checks for Jamie
