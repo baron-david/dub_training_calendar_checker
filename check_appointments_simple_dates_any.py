@@ -31,7 +31,7 @@ TIMEZONE = "America/Los_Angeles"
 BASE_URL = "https://dubtraining.as.me/api/scheduling/v1/availability/month"
 TIMES_URL = "https://dubtraining.as.me/api/scheduling/v1/availability/times"
 
-STATE_FILE = Path(os.environ.get("STATE_FILE", "known_dates.json"))
+STATE_FILE = Path(os.environ.get("STATE_FILE", "known_dates_debug.json"))
 SLACK_WEBHOOK_URL = os.environ.get("NOTIFY_WEBHOOK_URL")
 GROUPME_BOT_ID = os.environ.get("GROUPME_BOT_ID")
 MONTHS_AHEAD = int(os.environ.get("MONTHS_AHEAD", "3"))

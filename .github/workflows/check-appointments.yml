@@ -28,10 +28,9 @@ jobs:
 
       - name: Main Scripts - Run availability checks for all
         env:
-          # NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL }}
-          # Notify Holloway/Chin GroupMe Only
+          # Notify Holloway/Chin GroupMe
           GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID_HOLLOWAYS }}
-          STATE_FILE: known_dates.json
+          STATE_FILE: known_dates_any.json
           MONTHS_AHEAD: '3'
           
         run: |
@@ -52,7 +51,7 @@ jobs:
 
       - name: Extra Scripts - Run availability checks for Savannah
         env:
-          NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL_INFORM }}
+          NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL }}
           STATE_FILE: known_dates_sav.json
           MONTHS_AHEAD: '2'
           COACH_NAME: 'Savannah'
@@ -72,7 +71,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add known_dates.json
+          git add known_dates_any.json
           git add known_dates_jamie.json
           git add known_dates_sav.json
           git diff --cached --quiet || git commit -m "Update known appointment dates [skip ci]"
