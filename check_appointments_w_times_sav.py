@@ -128,7 +128,7 @@ def save_known_dates(dates: set[str]) -> None:
 
 
 def notify(new_dates: set[str], times_by_date: dict[str, list[dict]] | None = None) -> None:
-    lines = ["Jamie - New 7th grade hitting availability found:"]
+    lines = ["Savannah - New 7th grade hitting availability found:"]
     for d in sorted(new_dates):
         if times_by_date and d in times_by_date:
             lines.append(f"  - {d}: {format_slots(times_by_date[d])}")
