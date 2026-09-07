@@ -129,13 +129,19 @@ def save_known_dates(dates: set[str]) -> None:
 
 def notify(new_dates: set[str], times_by_date: dict[str, list[dict]] | None = None) -> None:
     lines = ["Savannah - New 7th grade hitting availability found:"]
-    for d in sorted(new_dates):
+    new_dates_split={ts.split('T')[0] for ts in new_dates}
+    for d in sorted(new_dates_split):
         if times_by_date and d in times_by_date:
             lines.append(f"  - {d}: {format_slots(times_by_date[d])}")
         else:
             lines.append(f"  - {d}")
     lines.append("")
     lines.append(BOOKING_URL)
+    
+    lines.append("There are the new times since last run:")
+    for d in sorted(new_dates):
+        lines.append(f"  - {d}")
+
     message = "\n".join(lines)
     print(message)
 
@@ -203,8 +209,7 @@ def main() -> None:
 
     new_times = current_times - known_dates
     if new_times:
-        new_dates_split = {ts.split('T')[0] for ts in new_times}
-        notify(new_dates_split,times_by_date)
+        notify(new_times,times_by_date)
     else:
         print("No new dates since last check.")
         
