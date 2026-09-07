@@ -26,18 +26,37 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Run availability checks
+      - name: Main Scripts - Run availability checks for all
         env:
           NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL }}
-          GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID }}
-          GROUPME_BOT_ID_test: ${{ secrets.GROUPME_BOT_ID_TEST }}
+          GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID_HOLLOWAYS }}
           STATE_FILE: known_dates.json
           MONTHS_AHEAD: '3'
           
         run: |
           python check_appointments_all.py
-          echo "====="
+          cat $STATE_FILE
+
+      - name: Extra Scripts - Run availability checks for Jamie
+        env:
+          NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL }}
+          GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID_DEVELOPMENT }}
+          STATE_FILE: known_dates_jamie.json
+          MONTHS_AHEAD: '2'
+          
+        run: |
           python check_appointments_w_times_jamie.py
+          cat $STATE_FILE
+
+      - name: Extra Scripts - Run availability checks for Savannah
+        env:
+          NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL_INFORM }}
+          STATE_FILE: known_dates_sav.json
+          MONTHS_AHEAD: '2'
+          
+        run: |
+          python check_appointments_w_times_sav.py
+          cat $STATE_FILE
 
       - name: StatusCake Push Heartbeat
         env:
@@ -51,5 +70,6 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add known_dates.json
           git add known_dates_jamie.json
+          git add known_dates_sav.json
           git diff --cached --quiet || git commit -m "Update known appointment dates [skip ci]"
           git push
