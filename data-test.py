@@ -19,11 +19,7 @@ new_times = {
 }
 
 
-filtered = {
-    date: [slot for slot in slots if slot['time'] in new_times]
-    for date, slots in data.items()
-}
-
+# easier to read code
 filtered = {}
 for date, slots in data.items():
     kept_slots = []
@@ -31,6 +27,12 @@ for date, slots in data.items():
         if slot['time'] in new_times:
             kept_slots.append(slot)
     filtered[date] = kept_slots
+
+# embedded code for above
+filtered = {
+    date: [slot for slot in slots if slot['time'] in new_times]
+    for date, slots in data.items()
+}
 
 # drop dates that end up with an empty list after filtering
 filtered = {date: slots for date, slots in filtered.items() if slots}

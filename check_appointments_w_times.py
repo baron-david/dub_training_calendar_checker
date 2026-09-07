@@ -26,7 +26,7 @@ import requests
 
 OWNER = "ad1bb86c"
 APPOINTMENT_TYPE_ID = "84360440"
-CALENDAR_ID = "12868457"
+
 TIMEZONE = "America/Los_Angeles"
 BASE_URL = "https://dubtraining.as.me/api/scheduling/v1/availability/month"
 TIMES_URL = "https://dubtraining.as.me/api/scheduling/v1/availability/times"
@@ -35,8 +35,10 @@ STATE_FILE = Path(os.environ.get("STATE_FILE", "known_dates_debug.json"))
 SLACK_WEBHOOK_URL = os.environ.get("NOTIFY_WEBHOOK_URL")
 GROUPME_BOT_ID = os.environ.get("GROUPME_BOT_ID")
 MONTHS_AHEAD = int(os.environ.get("MONTHS_AHEAD", "3"))
+COACH_NAME = os.environ.get("COACH_NAME", "All Coaches")
+CALENDAR_ID = os.environ.get("CALENDAR_ID", "any")
 
-BOOKING_URL = "<https://dubtraining.as.me/schedule/ad1bb86c/appointment/84360440/calendar/12868457|Book Now!>"
+BOOKING_URL = "<"+os.environ.get("CALENDAR_ID", "https://dubtraining.as.me")+"|Book Now!>"
 
 
 def month_starts(n: int) -> list[str]:
@@ -124,11 +126,11 @@ def load_known_dates() -> set[str]:
 
 
 def save_known_dates(dates: set[str]) -> None:
-    STATE_FILE.write_text(json.dumps(sorted(dates)[-30:], indent=2))
+    STATE_FILE.write_text(json.dumps(sorted(dates)[-25:], indent=2))
 
 
 def notify(new_dates: set[str], times_by_date: dict[str, list[dict]] | None = None) -> None:
-    lines = ["Savannah - New 7th grade hitting times found:"]
+    lines = [COACH_NAME + " - New 7th grade hitting times found:"]
     for d in sorted(new_dates):
         lines.append(f"  - {datetime.strptime(d, "%Y-%m-%dT%H:%M:%S%z").strftime("%Y-%m-%d %-I:%M%p")}")
 
@@ -195,6 +197,7 @@ def main() -> None:
     # Fetch specific open times for any newly available dates
     times_by_date = {}
     times_by_date = fetch_times_for_dates(current_dates)
+
     times_only = remove_slots_available(times_by_date)
     current_times = {
         slot['time']
