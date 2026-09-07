@@ -132,7 +132,7 @@ def notify(new_dates: set[str], times_by_date: dict[str, list[dict]] | None = No
     for d in sorted(new_dates):
         lines.append(f"  - {datetime.strptime(d, "%Y-%m-%dT%H:%M:%S%z").strftime("%Y-%m-%d %-I:%M%p")}")
 
-    lines = ["Availability:"]
+    lines.append("Availability:")
     new_dates_split={ts.split('T')[0] for ts in new_dates}
     for d in sorted(new_dates_split):
         if times_by_date and d in times_by_date:
