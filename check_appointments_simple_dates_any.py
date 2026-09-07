@@ -176,10 +176,6 @@ def main() -> None:
     new_dates = current_dates - known_dates
     all_dates = current_dates | known_dates
 
-    # Dates that were available before but no longer are (informational only)
-    closed_dates = known_dates - current_dates
-    if closed_dates:
-        print(f"The dates seen before but not there today: {sorted(closed_dates)}")
 
     # Fetch specific open times for any newly available dates
     times_by_date = {}

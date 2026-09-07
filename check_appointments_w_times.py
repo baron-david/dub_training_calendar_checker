@@ -216,12 +216,6 @@ def main() -> None:
     else:
         print("No new dates since last check.")
         
-    # Dates that were available before but no longer are (informational only)
-    closed_dates = known_dates - current_times
-    if closed_dates:
-        print(f"No longer available: {sorted(closed_dates)}")
-
-
 
 
 
