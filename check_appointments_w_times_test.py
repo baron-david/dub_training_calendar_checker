@@ -177,7 +177,7 @@ def remove_slots_available(data: dict) -> dict:
 
 
 def main() -> None:
-    print(f"[{datetime.now(timezone.utc).isoformat()}] Checking Jamie's availability...")
+    print(f"[{datetime.now(timezone.utc).isoformat()}] Checking calendar availability...")
 
     try:
         current_dates = fetch_all_available_dates()
