@@ -196,7 +196,7 @@ def main() -> None:
         for slots in times_only.values()
         for slot in slots
     }
-    save_known_dates(current_times)
+    save_known_dates(current_times | known_dates)
 
     print("Current Times Available:")
     print(current_times)
