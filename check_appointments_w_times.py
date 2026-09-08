@@ -31,13 +31,13 @@ TIMEZONE = "America/Los_Angeles"
 BASE_URL = "https://dubtraining.as.me/api/scheduling/v1/availability/month"
 TIMES_URL = "https://dubtraining.as.me/api/scheduling/v1/availability/times"
 
+## Environment Variables ##
 STATE_FILE = Path(os.environ.get("STATE_FILE", "known_dates_debug.json"))
 SLACK_WEBHOOK_URL = os.environ.get("NOTIFY_WEBHOOK_URL")
 GROUPME_BOT_ID = os.environ.get("GROUPME_BOT_ID")
 MONTHS_AHEAD = int(os.environ.get("MONTHS_AHEAD", "3"))
 COACH_NAME = os.environ.get("COACH_NAME", "All Coaches")
 CALENDAR_ID = os.environ.get("CALENDAR_ID", "any")
-
 BOOKING_URL = "<"+os.environ.get("BOOKING_URL", "https://dubtraining.as.me")+"|Book Now!>"
 
 
@@ -54,7 +54,6 @@ def month_starts(n: int) -> list[str]:
             y += 1
     return months
 
-
 def fetch_month_availability(month: str) -> dict[str, bool]:
     params = {
         "owner": OWNER,
@@ -66,7 +65,6 @@ def fetch_month_availability(month: str) -> dict[str, bool]:
     resp = requests.get(BASE_URL, params=params, timeout=15)
     resp.raise_for_status()
     return resp.json()
-
 
 def fetch_all_available_dates() -> set[str]:
     available = set()
@@ -104,7 +102,6 @@ def fetch_times_for_dates(days: set[str], calendar_id: str = CALENDAR_ID) -> dic
             results[day] = []
     return results
  
- 
 def format_slots(slots: list[dict]) -> str:
     """Turn a list of slot dicts into a human-readable 'h:mm AM/PM (xN)' string."""
     if not slots:
@@ -118,43 +115,49 @@ def format_slots(slots: list[dict]) -> str:
             formatted.append(f"<unparseable slot: {s} ({e})>")
     return ", ".join(formatted)
 
- 
-def load_known_dates() -> set[str]:
+def load_known_datetimes() -> set[str]:
     if STATE_FILE.exists():
         return set(json.loads(STATE_FILE.read_text()))
     return set()
 
-
-def save_known_dates(dates: set[str]) -> None:
+def save_known_datetimes(dates: set[str]) -> None:
+    # save the last 25 appointments seen
     STATE_FILE.write_text(json.dumps(sorted(dates)[-25:], indent=2))
 
+def remove_slots_available(data: dict) -> dict:
+    """Strip 'slotsAvailable' from each slot dict, keeping only 'time'."""
+    return {
+        date: [{'time': slot['time']} for slot in slots]
+        for date, slots in data.items()
+    }
 
-def notify(new_dates: set[str], times_by_date: dict[str, list[dict]] | None = None) -> None:
+## matches new appointments with main data dictionary for date, time & slotsAvailable
+def build_message(new_appointments: set[str], times_by_date: dict[str, list[dict]]) -> str:
     lines = [COACH_NAME + " - New 7th grade hitting times found:"]
 
-    # Filter the times_by_date dictionary to only include slots that are in new_dates
+    # Filter the times_by_date dictionary to only include slots that are in new_appointments
     filtered = {
-        date: [slot for slot in slots if slot['time'] in new_dates]
+        date: [slot for slot in slots if slot['time'] in new_appointments]
         for date, slots in times_by_date.items()
     }
     # drop dates that end up with an empty list after filtering
     filtered = {date: slots for date, slots in filtered.items() if slots}
 
-    # old code to just split new_dates into dates without considering times
-    new_dates_split={ts.split('T')[0] for ts in new_dates}
-    for d in sorted(new_dates_split):
+    # split new_appointments to dates to use for dictionary lookup
+    date_split={ts.split('T')[0] for ts in new_appointments}
+    for d in sorted(date_split):
         if filtered and d in filtered:
             lines.append(f"  - {d}: {format_slots(filtered[d])}")
         else:
             lines.append(f"  - {d}")
 
-
     lines.append("")
     lines.append(BOOKING_URL)
-
     message = "\n".join(lines)
     print(message)
+    return message
 
+def notify(message: str) -> None:
     if SLACK_WEBHOOK_URL:
         payload = json.dumps({"text": message}).encode()  # Slack-compatible; adjust for other targets
         req = urllib.request.Request(
@@ -165,7 +168,6 @@ def notify(new_dates: set[str], times_by_date: dict[str, list[dict]] | None = No
             print("Sent to Slack")
         except Exception as e:
             print(f"Warning: webhook notification failed: {e}", file=sys.stderr)
-
     if GROUPME_BOT_ID:
         payload = json.dumps({"bot_id": GROUPME_BOT_ID,"text": message}).encode()  # GroupMe-compatible; adjust for other targets
         req = urllib.request.Request(
@@ -178,13 +180,6 @@ def notify(new_dates: set[str], times_by_date: dict[str, list[dict]] | None = No
             print(f"Warning: webhook notification failed: {e}", file=sys.stderr)
 
 
-def remove_slots_available(data: dict) -> dict:
-    """Strip 'slotsAvailable' from each slot dict, keeping only 'time'."""
-    return {
-        date: [{'time': slot['time']} for slot in slots]
-        for date, slots in data.items()
-    }
-
 
 def main() -> None:
     print(f"[{datetime.now(timezone.utc).isoformat()}] Checking calendar availability...")
@@ -195,30 +190,31 @@ def main() -> None:
         print(f"Error fetching availability: {e}", file=sys.stderr)
         sys.exit(1)
 
-    known_dates = load_known_dates()
+    known_appointments = load_known_datetimes()
 
-    ## new code to check date/times here
+    # Fetch all open appointments w/ available spot using current_dates
+    all_datetime_availability = {}
+    all_datetime_availability = fetch_times_for_dates(current_dates)
 
-    # Fetch specific open times for any newly available dates
-    times_by_date = {}
-    times_by_date = fetch_times_for_dates(current_dates)
-    times_only = remove_slots_available(times_by_date)
-    current_times = {
+    # create a set of just available datetime values
+    split_datetime = remove_slots_available(all_datetime_availability)
+    current_appointments = {
         slot['time']
-        for slots in times_only.values()
+        for slots in split_datetime.values()
         for slot in slots
     }
-    # Saving the union of known_date and current_times so that cancelations won't trigger an alert
-    save_known_dates(current_times | known_dates)
+
+    # Saving the union of known_appointments and current_appointments so that cancelations won't trigger an alert
+    save_known_datetimes(current_appointments | known_appointments)
 
     print("Current Times Available:")
-    print(current_times)
+    print(current_appointments)
 
-    new_times = current_times - known_dates
-    if new_times:
-        print("New Times Available:")
-        print(new_times)
-        notify(new_times,times_by_date)
+    new_appointments = current_appointments - known_appointments
+    if new_appointments:
+        print("New Appointments Available:")
+        print(new_appointments)
+        notify(build_message(new_appointments,all_datetime_availability))
     else:
         print("No new dates since last check.")
 
