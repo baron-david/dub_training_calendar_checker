@@ -27,6 +27,7 @@ jobs:
         run: pip install requests
 
       - name: Main Scripts - Run availability checks for all
+        continue-on-error: true
         env:
           # Notify Holloway/Chin GroupMe
           GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID_HOLLOWAYS }}
@@ -37,6 +38,7 @@ jobs:
           python check_appointments_simple_dates_any.py
 
       - name: Extra Scripts - Run availability checks for Jamie
+        continue-on-error: true
         env:
           NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL }}
           GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID_DEVELOPMENT }}
@@ -50,6 +52,7 @@ jobs:
           python check_appointments_w_times.py
 
       - name: Extra Scripts - Run availability checks for Savannah
+        continue-on-error: true
         env:
           NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL }}
           STATE_FILE: known_dates_sav.json
