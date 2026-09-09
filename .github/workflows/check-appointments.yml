@@ -31,7 +31,7 @@ jobs:
         env:
           # Notify Holloway/Chin GroupMe
           GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID_HOLLOWAYS }}
-          STATE_FILE: known_dates_any.json
+          STATE_FILE: known_dates.json
           MONTHS_AHEAD: '3'
           
         run: |
@@ -74,7 +74,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add known_dates_any.json
+          git add known_dates.json
           git add known_dates_jamie.json
           git add known_dates_sav.json
           git diff --cached --quiet || git commit -m "Update known appointment dates [skip ci]"
