@@ -30,7 +30,7 @@ jobs:
           MONTHS_AHEAD: '2'
           COACH_NAME: 'Any'
           CALENDAR_ID: 'any'
-          BOOKING_URL: 'https://dubtraining.as.me/'
+          BOOKING_URL: 'https://dubtraining.as.me/schedule/ad1bb86c/appointment/84360440'
 
         run: |
           python check_appointments_w_times.py
