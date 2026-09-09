@@ -28,7 +28,7 @@ jobs:
           GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID_DEVELOPMENT }}
           STATE_FILE: known_dates_test.json
           MONTHS_AHEAD: '2'
-          COACH_NAME: 'Any'
+          COACH_NAME: 'Test Run'
           CALENDAR_ID: 'any'
           BOOKING_URL: 'https://dubtraining.as.me/schedule/ad1bb86c/appointment/84360440'
 
