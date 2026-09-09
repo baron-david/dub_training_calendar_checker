@@ -133,7 +133,7 @@ def remove_slots_available(data: dict) -> dict:
 
 ## matches new appointments with main data dictionary for date, time & slotsAvailable
 def build_message(new_appointments: set[str], times_by_date: dict[str, list[dict]]) -> str:
-    lines = [COACH_NAME + " - New 7th grade hitting times found:"]
+    lines = [COACH_NAME + " - New hitting appointment(s):"]
 
     # Filter the times_by_date dictionary to only include slots that are in new_appointments
     filtered = {
