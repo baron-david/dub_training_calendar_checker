@@ -81,7 +81,7 @@ jobs:
         continue-on-error: true
         env:
           GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID_DEVELOPMENT }}
-          STATE_FILE: know_dates_any_6th.json
+          STATE_FILE: known_dates_any_6th.json
           MONTHS_AHEAD: '2'
           COACH_NAME: '6th Grade'
           APPOINTMENT_TYPE_ID: '84360481'
