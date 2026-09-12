@@ -74,6 +74,18 @@ jobs:
           CALENDAR_ID: 'any'
           BOOKING_URL: 'https://dubtraining.as.me/schedule/ad1bb86c/appointment/84360440'
 
+      - name: Python - Run availability checks for 6th grade
+        continue-on-error: true
+        env:
+          GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID_DEVELOPMENT }}
+          STATE_FILE: know_dates_any_6th.json
+          MONTHS_AHEAD: '2'
+          COACH_NAME: '6th Grade'
+          APPOINTMENT_TYPE_ID: '84360481'
+          CALENDAR_ID: 'any'
+          BOOKING_URL: 'https://dubtraining.as.me/schedule/ad1bb86c/appointment/84360481'
+
+
         run: |
           python check_appointments_w_times.py
 
@@ -91,5 +103,6 @@ jobs:
           git add known_dates_jamie.json
           git add known_dates_sav.json
           git add known_dates_any.json
+          git add know_dates_*.json
           git diff --cached --quiet || git commit -m "Update known appointment dates [skip ci]"
           git push
