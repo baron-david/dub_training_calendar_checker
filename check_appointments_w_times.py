@@ -25,7 +25,6 @@ from pathlib import Path
 import requests
 
 OWNER = "ad1bb86c"
-APPOINTMENT_TYPE_ID = "84360440"
 
 TIMEZONE = "America/Los_Angeles"
 BASE_URL = "https://dubtraining.as.me/api/scheduling/v1/availability/month"
@@ -37,6 +36,7 @@ SLACK_WEBHOOK_URL = os.environ.get("NOTIFY_WEBHOOK_URL")
 GROUPME_BOT_ID = os.environ.get("GROUPME_BOT_ID")
 MONTHS_AHEAD = int(os.environ.get("MONTHS_AHEAD", "3"))
 COACH_NAME = os.environ.get("COACH_NAME", "All Coaches")
+APPOINTMENT_TYPE_ID = os.environ.get("APPOINTMENT_TYPE_ID", "84360440")
 CALENDAR_ID = os.environ.get("CALENDAR_ID", "any")
 BOOKING_URL = "<"+os.environ.get("BOOKING_URL", "https://dubtraining.as.me")+"|Book Now!>"
 
