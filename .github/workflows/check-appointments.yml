@@ -103,9 +103,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add known_dates.json
-          git add known_dates_jamie.json
-          git add known_dates_sav.json
-          git add known_dates_any.json
-          git add know_dates_*.json
+          git add known_dates_*.json
+
           git diff --cached --quiet || git commit -m "Update known appointment dates [skip ci]"
           git push
