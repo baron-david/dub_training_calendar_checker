@@ -26,22 +26,23 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Python - Run availability checks for all
-        continue-on-error: true
-        env:
-          # Notify Holloway/Chin GroupMe
-          GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID_HOLLOWAYS }}
-          STATE_FILE: known_dates.json
-          MONTHS_AHEAD: '3'
-          
-        run: |
-          python check_appointments_simple_dates_any.py
+#      - name: Python - Run availability checks for all
+#        continue-on-error: true
+#        env:
+#          # Notify Holloway/Chin GroupMe
+#          GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID_HOLLOWAYS }}
+#          STATE_FILE: known_dates.json
+#          MONTHS_AHEAD: '3'
+#          
+#        run: |
+#          python check_appointments_simple_dates_any.py
+#
 
       - name: Python - Run availability checks for Jamie
         continue-on-error: true
         env:
           NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL }}
-          GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID_DEVELOPMENT }}
+          #GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID_DEVELOPMENT }}
           STATE_FILE: known_dates_jamie.json
           MONTHS_AHEAD: '2'
           COACH_NAME: 'Jamie (7th Grade)'
@@ -64,10 +65,10 @@ jobs:
         run: |
           python check_appointments_w_times.py
 
-      - name: Python - Run availability checks for All Coaches
+      - name: Python - Run availability checks for 7th grade
         continue-on-error: true
         env:
-          GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID_DEVELOPMENT }}
+          GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID_HOLLOWAYS }}
           STATE_FILE: known_dates_any.json
           MONTHS_AHEAD: '2'
           COACH_NAME: '7th Grade'
@@ -81,7 +82,7 @@ jobs:
       - name: Python - Run availability checks for 6th grade
         continue-on-error: true
         env:
-          GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID_DEVELOPMENT }}
+          GROUPME_BOT_ID: ${{ secrets.GROUPME_BOT_ID_HOLLOWAYS }}
           STATE_FILE: known_dates_any_6th.json
           MONTHS_AHEAD: '2'
           COACH_NAME: '6th Grade'
